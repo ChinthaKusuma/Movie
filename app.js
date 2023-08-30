@@ -6,6 +6,14 @@ const dbPath = path.join(__dirname, "moviesData.db");
 const sqlite3 = require("sqlite3");
 let db = null;
 app.use(express.json());
+const convertCase = (dbResponse3) => {
+  return {
+    movieId: dbResponse3.movie_id,
+    directorId: dbResponse3.director_id,
+    movieName: dbResponse3.movie_name,
+    leadActor: dbResponse3.lead_actor,
+  };
+};
 
 const initiliazeDbAndServer = async () => {
   try {
@@ -30,6 +38,14 @@ const initiliazeDbAndServer = async () => {
         values(${directorId},'${movieName}','${leadActor}');`;
       const dbResponse2 = await db.run(addDataQuery);
       response.send("Movie Successfully Added");
+    });
+    app.get("/movies/:movieId/", async (request, response) => {
+      const { movieId } = request.params;
+      const movieIdQuery = `select * from Movie where 
+        movie_id=${movieId};`;
+      const dbResponse3 = await db.get(movieIdQuery);
+      const resultDbResponse3 = convertCase(dbResponse3);
+      response.send(resultDbResponse3);
     });
   } catch (e) {
     console.log("DB Error");
