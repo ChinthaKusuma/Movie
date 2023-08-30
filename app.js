@@ -15,6 +15,12 @@ const convertCase = (dbResponse3) => {
   };
 };
 
+const convertDirectorCase = (eachElement) => {
+  return {
+    directorId: eachElement.director_id,
+    directorName: eachElement.director_name,
+  };
+};
 const initiliazeDbAndServer = async () => {
   try {
     db = await open({
@@ -67,6 +73,14 @@ const initiliazeDbAndServer = async () => {
         where movie_id=${movieId};`;
       const dbResponse5 = await db.run(deleteQuery);
       response.send("Movie Removed");
+    });
+    app.get("/directors/", async (request, response) => {
+      const directorQuery = `select * from director;`;
+      const dbResponse6 = await db.all(directorQuery);
+      const result = dbResponse6.map((eachElement) =>
+        convertDirectorCase(eachElement)
+      );
+      response.send(result);
     });
   } catch (e) {
     console.log("DB Error");
