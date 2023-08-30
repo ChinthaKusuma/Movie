@@ -21,6 +21,7 @@ const convertDirectorCase = (eachElement) => {
     directorName: eachElement.director_name,
   };
 };
+
 const initiliazeDbAndServer = async () => {
   try {
     db = await open({
@@ -81,6 +82,17 @@ const initiliazeDbAndServer = async () => {
         convertDirectorCase(eachElement)
       );
       response.send(result);
+    });
+    app.get("/directors/:directorId/movies/", async (request, response) => {
+      const { directorId } = request.params;
+      const directorMovieQuery = `select movie_name from Movie 
+        where director_id=${directorId};`;
+      const dbResponse7 = await db.all(directorMovieQuery);
+      const result1 = dbResponse7.map((eachElement) => ({
+        movieName: eachElement.movie_name,
+      }));
+
+      response.send(result1);
     });
   } catch (e) {
     console.log("DB Error");
