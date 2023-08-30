@@ -61,6 +61,13 @@ const initiliazeDbAndServer = async () => {
       const dbResponse4 = await db.run(putQuery);
       response.send("Movie Details Updated");
     });
+    app.delete("/movies/:movieId/", async (request, response) => {
+      const { movieId } = request.params;
+      const deleteQuery = `delete from Movie 
+        where movie_id=${movieId};`;
+      const dbResponse5 = await db.run(deleteQuery);
+      response.send("Movie Removed");
+    });
   } catch (e) {
     console.log("DB Error");
   }
